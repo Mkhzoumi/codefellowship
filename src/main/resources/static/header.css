@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<style>
+
 * {box-sizing: border-box;}
 
 body {
@@ -59,21 +53,3 @@ body {
     float: none;
   }
   }
- </style>
-<body>
-<div th:replace="header2 :: header">...</div>
-
-<form action="perform_login" method="post">
-  <fieldset>
-    <legend>Login</legend>
-  <label for="username">User Name</label>
-  <input id="username" name="username" type="text">
-
-  <label for="password">Password</label>
-  <input id="password" name="password" type="password">
-
-      <button type="submit">login</button>
-  </fieldset>
-</form>
-</body>
-</html>

@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.security.Principal;
+
 @Controller
 public class ApplicationUserController {
 
@@ -22,13 +24,7 @@ public class ApplicationUserController {
 
 
     @GetMapping("/")
-    public String start(){
-        return"start.html";
-    }
-
-    @GetMapping("/home")
-    public String home(Model model){
-
+    public String start(Principal principl ,Model model){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String username = ((UserDetails)principal).getUsername();
@@ -36,8 +32,9 @@ public class ApplicationUserController {
         } else {
             String username = principal.toString();
         }
-        return"home.html";
+        return principl != null ? "home.html" : "start.html";
     }
+
 
     @GetMapping("/signup")
     public String signUp(){
@@ -54,6 +51,7 @@ public class ApplicationUserController {
 
         ApplicationUser newUser = new ApplicationUser(object.getUsername(),bCryptPasswordEncoder.encode(object.getPassword()) , object.getFirstName(), object.getLastName(), object.getDateOfBirth(), object.getBio());
         applicationUserRepository.save(newUser);
+
         return new RedirectView("login");
     }
 
@@ -72,5 +70,22 @@ public class ApplicationUserController {
 
 
         return "user.html";
+    }
+
+
+    @GetMapping("/myprofile")
+    public String profile(Model model){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+            ApplicationUser user = applicationUserRepository.findByUsername(username);
+            model.addAttribute("username" , username);
+
+
+            model.addAttribute("user" , user);
+        } else {
+            String username = principal.toString();
+        }
+        return "profile";
     }
 }

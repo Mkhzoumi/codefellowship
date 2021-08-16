@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="header.css" th:href="header.css">
 </head>
+
+
 <body>
-<header>
-  <h1>Code Fellows Ship</h1>
-
-        <h2>current user: <span th:text="${username}"></span></h2>
-
-  <button><a href="/perform_logout">logout</a></button>
-</header>
-
+<div th:replace="header :: header">...</div>
 <main>
 
 </main>

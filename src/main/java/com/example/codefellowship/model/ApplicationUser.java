@@ -2,9 +2,8 @@ package com.example.codefellowship.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 public class ApplicationUser implements UserDetails {
@@ -18,6 +17,11 @@ private String firstName;
 private String lastName;
 private String dateOfBirth;
 private String bio;
+
+@OneToMany(mappedBy ="applicationUser")
+private List<Post> posts;
+
+
 
 
      public ApplicationUser(){
@@ -107,5 +111,13 @@ private String bio;
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }
