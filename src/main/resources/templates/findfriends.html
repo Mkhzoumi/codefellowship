@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <style>
 
-.allpage {
+.allBody {
     display: flex;
-    gap: 25%;
-    margin-left: 5%;
-    margin-top: 5%;
+    justify-content: center;
+    gap: 10vh;
+    margin-top: 10vh;
+    flex-wrap: wrap;
 }
 
 form{
 width:600px;
 margin-bottom:30ox;
+}
+
+h2{
+text-align: center;
 }
 
 textarea{
@@ -26,7 +31,7 @@ width: 100%
     max-width: 600px;
 }
 
-.post p, .post a {
+.post p {
 display:inline-block;
 margin-left:10px;
 word-wrap: anywhere;
@@ -34,7 +39,7 @@ word-wrap: anywhere;
 .card {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  width: 25%;
+  width: 20%;
   max-height: 500px;
 }
 
@@ -103,44 +108,21 @@ body {
 
 
  </style>
-
 <body>
 <div th:replace="header :: header">...</div>
 
-<div class="allpage">
-
-<div class="card">
+<div class="allBody">
+  <div class="card" th:each="user:${users}">
     <img src="https://www.pixsy.com/wp-content/uploads/2021/04/ben-sweet-2LowviVHZ-E-unsplash-1.jpeg" alt="Avatar" style="width:100%">
     <div class="container">
-        <h4><b>username: <span th:text="${user.username}"></span></b></h4>
-        <p>first name: <span th:text="${user.firstName}"></span></p>
-        <p>last name: <span th:text="${user.lastName}"></span></p>
-        <p>date of birth: <span th:text="${user.dateOfBirth}"></span></p>
-        <p>bio: <span th:text="${user.bio}"></span></p>
+      <h4><b>username: <span th:text="${user.username}"></span></b></h4>
+      <p>first name: <span th:text="${user.firstName}"></span></p>
+      <p>last name: <span th:text="${user.lastName}"></span></p>
+      <p>date of birth: <span th:text="${user.dateOfBirth}"></span></p>
+      <p>bio: <span th:text="${user.bio}"></span></p>
+      <a th:href="'/users/'+${user.id}">see profile</a>
     </div>
-</div>
-
-<div class="form-and-post">
-
-<form action="#" th:action="'/addpost/'+ ${user.id}"  method="post">
-    <fieldset>
-        <legend>Add New Post </legend>
-            <textarea id="body" name="body" ></textarea>
-            <input type="submit" value="Submit">
-    </fieldset>
-</form>
-
-    <div class="allposts">
-        <div  th:each="post : ${user.posts}" class="post">
-            <p th:text="${post.createdAt}"></p>
-            <p th:text="${post.body}"></p>
-        </div>
-    </div>
-
-
-
-</div>
-
+  </div>
 </div>
 
 </body>

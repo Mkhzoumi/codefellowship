@@ -121,6 +121,9 @@ body {
     <p>last name: <span th:text="${user.lastName}"></span></p>
     <p>date of birth: <span th:text="${user.dateOfBirth}"></span></p>
     <p>bio: <span th:text="${user.bio}"></span></p>
+      <form method="post" th:action="'/follow/'+ ${user.id}" th:if="${status} == true">
+          <input type="submit" value="Follow">
+      </form>
   </div>
 </div>
 

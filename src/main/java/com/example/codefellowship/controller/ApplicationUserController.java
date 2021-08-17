@@ -2,7 +2,8 @@ package com.example.codefellowship.controller;
 
 
 import com.example.codefellowship.model.ApplicationUser;
-import com.example.codefellowship.repository.ApplicationUserRepository;
+import com.example.codefellowship.model.DbUserData;
+import com.example.codefellowship.repository.DbUserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class ApplicationUserController {
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
+    DbUserDataRepository dbUserDataRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -47,11 +49,10 @@ public class ApplicationUserController {
     }
 
     @PostMapping("/signup")
-    public RedirectView signUp(@ModelAttribute ApplicationUser object){
+    public RedirectView signUp(@ModelAttribute DbUserData object){
 
-        ApplicationUser newUser = new ApplicationUser(object.getUsername(),bCryptPasswordEncoder.encode(object.getPassword()) , object.getFirstName(), object.getLastName(), object.getDateOfBirth(), object.getBio());
-        applicationUserRepository.save(newUser);
-
+        DbUserData newUser = new DbUserData(object.getUsername(),bCryptPasswordEncoder.encode(object.getPassword()) , object.getFirstName(), object.getLastName(), object.getDateOfBirth(), object.getBio());
+        dbUserDataRepository.save(newUser);
         return new RedirectView("login");
     }
 
@@ -62,11 +63,17 @@ public class ApplicationUserController {
         if (principal instanceof UserDetails) {
             String username = ((UserDetails)principal).getUsername();
             model.addAttribute("username" , username);
+            DbUserData user= dbUserDataRepository.findByUsername(username);
+            if (!(user.getFollowing().contains(dbUserDataRepository.findById(id).get())) && dbUserDataRepository.findById(id).get() != user){
+                model.addAttribute("status" , true);
+            }else{
+                model.addAttribute("status" , false);
+            }
         } else {
             String username = principal.toString();
         }
 
-            model.addAttribute("user" , applicationUserRepository.findById(id).get());
+            model.addAttribute("user" , dbUserDataRepository.findById(id).get());
 
 
         return "user.html";
@@ -78,7 +85,7 @@ public class ApplicationUserController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             String username = ((UserDetails)principal).getUsername();
-            ApplicationUser user = applicationUserRepository.findByUsername(username);
+            DbUserData user = dbUserDataRepository.findByUsername(username);
             model.addAttribute("username" , username);
 
 
@@ -87,5 +94,35 @@ public class ApplicationUserController {
             String username = principal.toString();
         }
         return "profile";
+    }
+
+    @PostMapping("/follow/{id}")
+    public RedirectView follow(Principal p , @PathVariable("id") int id){
+        DbUserData me = dbUserDataRepository.findByUsername(p.getName());
+        DbUserData followed = dbUserDataRepository.findById(id).get();
+
+        me.getFollowing().add(followed);
+        followed.getFollowers().add(me);
+        dbUserDataRepository.save(me);
+        dbUserDataRepository.save(followed);
+        return new RedirectView("/users/{id}");
+    }
+
+    @GetMapping("/feed")
+    public String feed(Principal p, Model model){
+        DbUserData me = dbUserDataRepository.findByUsername(p.getName());
+        List<DbUserData> following = me.getFollowing();
+        model.addAttribute("following",following);
+        model.addAttribute("username",me.getUsername());
+        return "feed.html";
+    }
+
+    @GetMapping("/findfriends")
+    public String findFriends(Model model , Principal p){
+        List<DbUserData> allUsers = (List<DbUserData>)dbUserDataRepository.findAll();
+        model.addAttribute("username",p.getName());
+        model.addAttribute("users" , allUsers);
+
+        return "findfriends.html";
     }
 }
