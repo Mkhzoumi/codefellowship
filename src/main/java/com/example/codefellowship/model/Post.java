@@ -7,18 +7,19 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String body;
     private String createdAt;
-
     @ManyToOne
-    private ApplicationUser applicationUser;
+    private DbUserData applicationUser;
+
+
+
 
     public Post(){
 
     }
 
-    public Post(String body, String createdAt, ApplicationUser applicationUser) {
+    public Post(String body, String createdAt, DbUserData applicationUser) {
         this.body = body;
         this.createdAt = createdAt;
         this.applicationUser = applicationUser;
@@ -44,11 +45,11 @@ public class Post {
         this.createdAt = createdAt;
     }
 
-    public ApplicationUser getApplicationUser() {
+    public DbUserData getApplicationUser() {
         return applicationUser;
     }
 
-    public void setApplicationUser(ApplicationUser applicationUser) {
+    public void setApplicationUser(DbUserData applicationUser) {
         this.applicationUser = applicationUser;
     }
 }

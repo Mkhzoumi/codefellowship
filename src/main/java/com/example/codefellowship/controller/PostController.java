@@ -1,7 +1,8 @@
 package com.example.codefellowship.controller;
 
+import com.example.codefellowship.model.ApplicationUser;
 import com.example.codefellowship.model.Post;
-import com.example.codefellowship.repository.ApplicationUserRepository;
+import com.example.codefellowship.repository.DbUserDataRepository;
 import com.example.codefellowship.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,7 @@ import java.util.Date;
 public class PostController {
 
     @Autowired
-    ApplicationUserRepository applicationUserRepository;
+    DbUserDataRepository dbUserDataRepository;
 
     @Autowired
     PostRepository postRepository;
@@ -29,7 +30,7 @@ public class PostController {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         Date date = new Date(System.currentTimeMillis());
 
-        Post newPost = new Post(body , formatter.format(date),  applicationUserRepository.findById(id).get());
+        Post newPost = new Post(body , formatter.format(date), dbUserDataRepository.findById(id).get());
 
         postRepository.save(newPost);
 
